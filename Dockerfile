@@ -2,8 +2,7 @@
 FROM node:18
 
 # Install Git and cron
-RUN apt-get update && \
-    apt-get install -y git cron \
+RUN apt-get update && apt-get install -y git cron
 
 # Set the working directory
 WORKDIR /app

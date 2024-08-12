@@ -1,9 +1,14 @@
 # Use an official Node.js image as the base
 FROM node:18
 
+# Add labels for metadata
+LABEL maintainer="Helper"
+LABEL version="1.0"
+LABEL description="This is a Dockerfile for the IPTV EPG Grabber"
+
 # Install Git and cron
 RUN apt-get update && \
-    apt-get install -y git cron
+    apt-get install -y git cron \
 
 # Set the working directory
 WORKDIR /app
@@ -27,7 +32,9 @@ RUN chmod +x /app/epg/run_grab.sh
 RUN /app/epg/run_grab.sh
 
 # Add the cron job (runs at midnight and silences the output)
-RUN echo "0 0 * * * cd /app/epg && npm run grab -- --site=tvpassport.com > /dev/null 2>&1" > /etc/cron.d/grab-cron
+RUN echo "0 0 * * * cd /app/epg && npm run grab -- --site=tvpassport.com --maxConnections=5  \
+    > /dev/null 2>&1"  \
+    > /etc/cron.d/grab-cron
 
 # Apply correct permissions for the cron job file
 RUN chmod 0644 /etc/cron.d/grab-cron
